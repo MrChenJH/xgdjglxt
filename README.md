@@ -4,7 +4,7 @@
 
 
 第一步 npm  install 
-第二部 npm run dev
+第二步 npm  run    dev
 
 Copyright (c) 2018-present ChenJinHua
 

@@ -8,7 +8,7 @@
 <el-row :gutter="20">
   <el-col :span="4" >   
 <el-input
-  placeholder="积分获取项目"
+  placeholder="会员等级"
   v-model="searchObj.jfhqxm" >
 
 </el-input>
@@ -26,75 +26,35 @@
             
          </el-table-column> 
 
-        <el-table-column align="center" label="积分获取项目"  width="190px">
+        <el-table-column align="center" label="会员等级"  width="190px">
         <template slot-scope="scope"> 
-            <template v-if="scope.row.edit">
-            <el-input v-model="scope.row.ationName" placeholder="积分获取项目"></el-input>
-          </template> 
-            <span v-else>{{scope.row.ationName}}</span>
+          
+            <span >{{scope.row.hyLevel}}</span>
         </template>
       </el-table-column>
       
-      <el-table-column min-width="190px"  label="积分类型"  align="center" >
+      <el-table-column min-width="190px"  label="会员金额"  align="center" >
        <template slot-scope="scope"> 
            <template v-if="scope.row.edit">
-        <el-select v-model="scope.row.jfType" placeholder="积分类型">
-        <el-option
-             v-for="item in jflx"
-             :key="item.name"
-             :label="item.name"
-            :value="item.name">
-       </el-option>
-       </el-select>
-           
+   
+           <el-input v-model="scope.row.levelJe" placeholder="会员金额"/>
           </template> 
-         <span v-else>{{scope.row.jfType}}</span>
+         <span v-else>{{scope.row.levelJe}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column min-width="190px"  label="项目类型" align="center" >
+      <el-table-column min-width="190px"  label="兑换比例" align="center" >
        <template slot-scope="scope"> 
            <template v-if="scope.row.edit">
-                  <el-select v-model="scope.row.ationType" placeholder="项目类型">
-                <el-option
-             v-for="item in xmlx"
-             :key="item.name"
-             :label="item.name"
-            :value="item.name">
-       </el-option>
-       </el-select>
+                  <el-input v-model="scope.row.scale" placeholder="兑换比例" style="width:50px"/>
+                 
            
           </template> 
-        <span v-else>{{scope.row.ationType}}</span>
+        <span v-else>{{scope.row.scale}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column min-width="400px" label="描述" align="center">
-        <template slot-scope="scope"> 
-         <template v-if="scope.row.edit">
-             <el-input
-              type="textarea"
-              :autosize="{ minRows: 2, maxRows: 4}"
-              placeholder="描述"
-              v-model="scope.row.describe">
-            </el-input>
-            
-        </template>
-          <span  v-else>{{scope.row.describe}}</span>
-        </template>
-      </el-table-column>
-    
-
-    
-      
-      <el-table-column min-width="100px" label="默认积分值" align="center">
-        <template slot-scope="scope"> 
-         <template v-if="scope.row.edit">
-             <el-input v-model="scope.row.moRenScore" placeholder="描述"></el-input>
-        </template>
-          <span  v-else>{{scope.row.moRenScore}}</span>
-        </template>
-      </el-table-column>
+     
      <el-table-column align="center" label="操作" width="400px" fixed="right">
         <template slot-scope="scope">
           <template v-if="scope.row.edit">
@@ -104,7 +64,7 @@
           <template v-else>
           <el-button type="primary" @click='scope.row.edit=!scope.row.edit' size="small">编辑</el-button> 
           <el-button type="danger"  @click='remove(scope.row)' size="small">删除</el-button> 
-          <el-button  size="small" @click='qyShow(scope.row)'  type="success">区域积分设置</el-button>
+          <el-button  size="small" @click='qyShow(scope.row)'  type="success">区域规则设置</el-button>
           </template>
         </template>
       </el-table-column>
@@ -129,7 +89,7 @@
 <el-dialog
      top="5vh"
       width="85%"
-      title="区域积分管理"
+      title="区域规则设置"
       :visible.sync="showqujf" >
        <el-row :gutter="20">
    <el-col :span="2" >
@@ -139,21 +99,11 @@
     
   <el-col :span="20" > 
       <el-input
-  placeholder="积分获取项目"
-  v-model="qyjfobj.ationName" style="width:200px"
+  placeholder="会员等级"
+  v-model="qyjfobj.vipLevel" style="width:200px"
   :disabled="true">
 </el-input>  
- <el-input
-  placeholder="项目类型"
-  v-model="qyjfobj.ationType"  style="width:200px"
-  :disabled="true">
-</el-input>
 
- <el-input
-  placeholder="积分类型"
-  v-model="qyjfobj.jfType"  style="width:200px"
-  :disabled="true">
-</el-input>
   </el-col>
 
 </el-row>
@@ -170,7 +120,7 @@
        <template slot-scope="scope"> 
            <template v-if="scope.row.edit">
                     <template v-if="scope.row.add">
-                 <el-select v-model="scope.row.ssQy"  placeholder="所属区域" >
+                 <el-select v-model="scope.row.syqy"  placeholder="所属区域" >
     <el-option
       v-for="item in ssqy"
       :key="item.value"
@@ -181,7 +131,7 @@
                </template> 
 
             <template v-else>
-    <el-select v-model="scope.row.ssQy"  disabled  placeholder="所属区域" >
+    <el-select v-model="scope.row.syqy"  disabled  placeholder="所属区域" >
     <el-option
       v-for="item in ssqy"
       :key="item.value"
@@ -192,16 +142,16 @@
   </el-select> 
            </template> 
           </template> 
-         <span v-else>{{scope.row.ssQy}}</span>
+         <span v-else>{{scope.row.syqy}}</span>
         </template>
       </el-table-column>
 
-        <el-table-column align="center" label="区域积分值"  width="100px">
+        <el-table-column align="center" label="折扣"  width="100px">
         <template slot-scope="scope"> 
            <template v-if="scope.row.edit">
-            <el-input v-model="scope.row.qyScore" placeholder="区域积分值"></el-input>
+            <el-input v-model="scope.row.discount" placeholder="折扣" style="width:50px"></el-input>折
           </template> 
-            <span v-else>{{scope.row.qyScore}}</span>
+            <span v-else>{{scope.row.discount}}折</span>
         </template>
       </el-table-column>
       
@@ -281,43 +231,23 @@
            </el-row> 
     </el-dialog>
   <el-row> 
-    <el-col :span="4"  style="text-align: right;    padding-right: 7px;"><span class="textSpan" > 积分获取项目:</span></el-col> 
-    <el-col :span="8"><el-input type="text" v-model="saveObj.ationName"/></el-col> 
+    <el-col :span="4"  style="text-align: right;    padding-right: 7px;"><span class="textSpan" > 会员等级:</span></el-col> 
+    <el-col :span="8"><el-input type="text" v-model="saveObj.hyLevel"/></el-col> 
     <el-col :span="3"  style="text-align: right;    padding-right: 5px;"><span class="textSpan"> 积分类型:</span></el-col> 
     <el-col :span="8">
-
-        <el-select v-model="saveObj.JfType" placeholder="积分类型">
-        <el-option
-             v-for="item in jflx"
-             :key="item.name"
-             :label="item.name"
-            :value="item.name">
-       </el-option>
-       </el-select>
+<el-input type="text"   v-model="saveObj.levelJE"/>
+       
     </el-col>
   </el-row> 
 
    <el-row> 
-    <el-col :span="4"  style="text-align: right;    padding-right: 7px;"><span class="textSpan" > 项目类型:</span></el-col> 
+    <el-col :span="4"  style="text-align: right;    padding-right: 7px;"><span class="textSpan" > 兑换比例:</span></el-col> 
     <el-col :span="8">
-        <el-select v-model="saveObj.AtionType" placeholder="项目类型">
-        <el-option
-             v-for="item in xmlx"
-             :key="item.name"
-             :label="item.name"
-            :value="item.name">
-       </el-option>
-       </el-select>
+       <el-input type="text"   v-model="saveObj.scale"/>
         </el-col> 
-   <el-col :span="3" style="text-align: right;    padding-right: 7px;"><span class="textSpan" > 默认积分值:</span></el-col> 
-    <el-col :span="8"><el-input type="text" v-model="saveObj.moRenScore"/></el-col> 
-   
-  </el-row> 
-  <el-row > 
-   <el-col :span="4"    style="text-align: right;    padding-right: 5px;"><span     class="textSpan">项目描述:</span></el-col> 
-   <el-col :span="19">   <el-input  v-model="saveObj.describe"  type="textarea"  :rows="4"  placeholder="项目描述..."/></el-col> 
 
- </el-row>
+  </el-row> 
+
  
 
 
@@ -334,8 +264,8 @@
 
  import  TableDefined from '@/components/TableDefined'
 
- import {Get,Del,Update,Add} from '@/api/jf'
- import {jyGet,jyAdd,jyUpdate,jyDel} from '@/api/qyjf'
+ import {Get,Del,Update,Add} from '@/api/hy'
+ import {jyGet,jyAdd,jyUpdate,jyDel} from '@/api/qyhy'
  import {exportToCsv,GetParams} from '@/utils/tool'
 
  export default {
@@ -357,6 +287,16 @@
      },
     data() {
       return {
+          hyzk:[
+
+              {v:1,name:"一折"},
+              {v:2,name:"两折"},
+              {v:3,name:"三折"},
+              {v:4,name:"四折"},
+              {v:5,name:"五折"},
+              {v:6,name:"六折"},
+              {v:7,name:"七折"}
+          ],
         restaurants: [],
         state4: '',
         timeout:  null,
@@ -378,8 +318,7 @@
             {name:"活动项目"}
         ],
         ssqy:[
-         
-    
+           
          ],
         listLoading: true,
         innerVisible:false,
@@ -388,16 +327,13 @@
           
          },
          qyjfobj:{
-              ationName:"", 
-              ationType:"",
-              jfType:""
+              vipLevel:""
+              
          },
          saveObj:{
-           ationName:"",
-           jfType:"",
-           ationType:"",
-           describe:"",
-           moRenScore:"0"
+          hyLevel:"",
+          levelJE:1.0,
+          scale:1.0
          },
         currentPage: 1,
         dialogFormVisible:false,
@@ -409,11 +345,10 @@
    
       qyShow(row){
       debugger
-      jyGet(row.ationName,row.ationType,row.jfType).then(t=>
+      jyGet(row.hyLevel,"").then(t=>
          {
-      this.qyjfobj.ationName=row.ationName
-         this.qyjfobj.ationType=row.ationType
-                 this.qyjfobj.jfType=row.jfType 
+    
+                 this.qyjfobj.vipLevel=row.hyLevel 
            this.qyShowData=t.data
             this.showqujf=true;
          })
@@ -445,7 +380,7 @@
           type: 'warning'
         }).then(() => {
           this.selectRows.forEach((item,i)=>{
-             Del(item.ationName,item.ationType,item.jfType).then(t=>{
+             Del(item.hyLevel).then(t=>{
 
          this.search()
               this.$message({
@@ -467,14 +402,14 @@
       
       },
         remove1(row){
- this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+  this.$confirm('此操作将永久删除, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
     
-    jyDel(   this.qyjfobj.ationName,   this.qyjfobj.ationType,   this.qyjfobj.jfType,row.ssQy).then(t=>{
-            jyGet(this.qyjfobj.ationName,   this.qyjfobj.ationType,   this.qyjfobj.jfType).then(t=>
+    jyDel(this.qyjfobj.vipLevel,row.syqy).then(t=>{
+            jyGet(   this.qyjfobj.vipLevel,"").then(t=>
          {
     
                
@@ -508,7 +443,7 @@
           type: 'warning'
         }).then(() => {
     
-    Del(row.ationName,row.ationType,row.jfType).then(t=>{
+    Del(row.hyLevel).then(t=>{
 
          this.search()
               this.$message({
@@ -530,7 +465,7 @@
       },
       qyAdd(){
          
-        this.qyShowData.unshift(  {id:  this.qyShowData.length+1,qyjfz:0,ssqy:"" ,sfqy:"0",qysj:"2018-05-01 12:10:11",tysj:"2018-06-01 12:10:11",mrfz:0,edit:true,add:true})
+        this.qyShowData.unshift(  {syqy:"",discount:"",qyTime:"",endTime:"",edit:true,add:true})
         
       },
       cancelEdit(row){
@@ -539,7 +474,7 @@
 
       },
       update(row){
-        Update(row).then(r=>{
+        Update(row.hyLevel,row).then(r=>{
           row.edit = false
           this.search()
         })
@@ -551,18 +486,19 @@
         Object.assign(row,this.qyjfobj)
         if(row.add){
         jyAdd(row).then(r=>{
+        delete row["add"]
           row.edit = false
         })
         
         }else{
 
-        jyUpdate(this.qyjfobj.ationName,this.qyjfobj.ationType,this.qyjfobj.jfType,row).then(r=>{
+        jyUpdate(this.qyjfobj.vipLevel,row.syqy,row).then(r=>{
           row.edit = false
         })
         }
       },
     cancel(){
-   
+    this.search()
         this.dialogFormVisible=false; 
                  this.qyShowData=false;
     },
@@ -571,6 +507,7 @@
             Add(this.saveObj).then(t=>{
                  this.dialogFormVisible=false; 
                  this.qyShowData=false;
+                  this.search()
             })
          
       },

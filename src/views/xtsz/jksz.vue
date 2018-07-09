@@ -13,27 +13,22 @@
              width="55">
        </el-table-column> 
 
-    <el-table-column align="center" label="序号"  width="50">
-          <template slot-scope="scope"> 
-            <span>{{scope.row.id}}</span>
-        </template>
-   </el-table-column> 
         <el-table-column align="center" label="支付名称" width="180">
         <template slot-scope="scope"> 
             <template v-if="scope.row.edit">
-            <el-input type="text" v-model="scope.row.zfmc"/>
+            <el-input type="text" v-model="scope.row.name"/>
            </template> 
-        <span v-else>{{scope.row.zfmc}}</span>
+        <span v-else>{{scope.row.name}}</span>
         </template>
       </el-table-column>
       
       <el-table-column min-width="400px"  label="接口地址" align="center" >
        <template slot-scope="scope"> 
            <template v-if="scope.row.edit">
-                <el-input type="text" v-model="scope.row.jkdz"/>
+                <el-input type="text" v-model="scope.row.jkName"/>
         
           </template> 
-         <span v-else>{{scope.row.jkdz}}</span>
+         <span v-else>{{scope.row.jkName}}</span>
         </template>
       </el-table-column>
 
@@ -100,12 +95,12 @@
  
    <el-row > 
    <el-col :span="3" :offset="1"   style="text-align: right;    padding-right: 5px;"><span     class="textSpan">支付名称:</span></el-col> 
-   <el-col :span="20">   <el-input  type="text" v-model="saveObj.zfmc"/></el-col> 
+   <el-col :span="20">   <el-input  type="text" v-model="saveObj.Name"/></el-col> 
   </el-row>
  
  <el-row > 
    <el-col :span="3" :offset="1"   style="text-align: right;    padding-right: 5px;"><span     class="textSpan">接口地址:</span></el-col> 
-   <el-col :span="20">   <el-input  type="text" v-model="saveObj.jkdz"/></el-col> 
+   <el-col :span="20">   <el-input  type="text" v-model="saveObj.JkName"/></el-col> 
   </el-row>
   <div slot="footer" class="dialog-footer">
     <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -119,7 +114,7 @@
 <script>
 
  import  TableDefined from '@/components/TableDefined'
- import  {office,addRole,RoleS}  from '@/api/role'
+import {Get,Del,Update,Add} from '@/api/jk'
  import  {Users} from '@/api/user'
  import {exportToCsv} from '@/utils/tool'
 
@@ -132,26 +127,16 @@
 
   },
   mounted(){  
- 
-      this.restaurants = this.loadAll();
-   
-           this.total=this.tableData.length
-           this.showData=[];
-           this.tableData.forEach((x,i) => 
-           {     
-             console.log(x)
-             console.log(i)
-             if(i>=((this.currentPage-1)*this.pageSize1)&&i<(this.currentPage*this.pageSize1))
-                {
-                                this.showData.push(x); 
-                }
-           });
-
-           console.log(this.showData)
+       Get(5,1).then(r=>{
+            debugger;
+            console.log(r)
+            this.total=r.total
+            this.showData=r.data
+        })
      },
     data() {
       return {
-         restaurants: [],
+        restaurants: [],
         state4: '',
         timeout:  null,
         innerVisible1:false,
@@ -182,37 +167,18 @@
            ssqy:''
          },
          saveObj:{
-           zfmc:"",
-           jkdz:"",
-           score:0,
-           fre:0
-         },
+           Name:"",
+           JkName:""
+          },
         currentPage: 1,
         dialogFormVisible:false,
         showData:[],
         tableData:[
-           {id:1,zfmc:"支付宝",jkdz:'http://xxxxxxx',edit:false},
-           {id:2,zfmc:"微信",jkdz:'http://xxxxxxx' ,edit:false},
+         
           ]
       }
-    } , methods: {
-       loadAll() {
-        return [
-          { "value": "用户1" },
-          { "value": "admin" },
-          { "value": "sys" },
-          { "value": "sys1" },
-          { "value": "sys2" },
-          { "value": "sys3" },
-          { "value": "sys4" },
-          { "value": "sys5" },
-          { "value": "sys6" },
-          { "value": "sys7" },
-          { "value": "sys8" },
-          { "value": "sys9" },
-          { "value": "sys10" }
-         ];
-      },
+    },
+  methods:{
       querySearchAsync(queryString, cb) {
         var restaurants = this.restaurants;
         var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
@@ -229,20 +195,14 @@
       },
       handleSelect(item) {
         console.log(item);
-      }
-    
-      ,
+      },
       search(){
-         let data= this.tableData.filter(r=>r.userName.includes(this.sUserName))
-         this.showData=[];
-         data.forEach((x,i) => 
-           {  
-                if(i>=(this.currentPage-1)*this.pageSize1&&i<this.currentPage*this.pageSize1)
-                {
-                  this.showData.push(x); 
-                }
-           });
-           this.total=data.length;
+        Get(this.pageSize1,this.currentPage).then(r=>{
+            debugger;
+            console.log(r)
+            this.total=r.total
+            this.showData=r.data
+        })
       },
       select(r,i){
         this.selectRows=[]
@@ -261,8 +221,14 @@
           type: 'warning'
         }).then(() => {
           this.selectRows.forEach((item,i)=>{
-               let index=this.tableData.findIndex(r=>r.id==item.id) 
-               this.tableData.splice(index,1);
+              Del(item.name).then(t=>{
+
+           this.search()
+           this.$message({
+           message: '删除成功',
+           type: 'success'
+          })
+        })
         })
       
         this.search()
@@ -287,16 +253,20 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-    
-        let i= this.tableData.findIndex(r=>r.id==row.id)
-        console.log(i);
-        this.tableData.splice(i,1);
-        this.search()
-              this.$message({
+       debugger
+       console.log(row.name)
+        Del(row.name).then(t=>{
+
+           this.search()
+           this.$message({
            message: '删除成功',
            type: 'success'
           })
-        }).catch(() => {
+        })
+     
+        }).catch((err) => { 
+          debugger
+          console.log(err)
           this.$message({
             type: 'info',
             message: '已取消删除'
@@ -310,14 +280,21 @@
       this.search()
 
       },
-      update(row){
-             row.edit = false
+      update(row){ 
+         Update(row.name,row).then(t=>{
+
+           row.edit = false
+         })
+      
+            
       },
 
      Save(){   
-       
-       this.search();
+       Add(this.saveObj).then(t=>{
+         this.search();
        this.dialogFormVisible=false; 
+       })
+  
       },
       handleSizeChange(val) {  
            this.pageSize1=val;
@@ -327,8 +304,9 @@
            this.currentPage=val;
            this.search();
       }
+      }
     }
-  }
+  
 </script>
 <style>
  .el-row {

@@ -19,6 +19,7 @@
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
 
+import {GetYhxx} from '@/utils/tool'
 export default {
   components: { SidebarItem },
   computed: {
@@ -26,7 +27,40 @@ export default {
       'sidebar'
     ]),
     routes() {
-      return this.$router.options.routes
+      debugger
+      let obj=GetYhxx()
+      let items=[]
+      items.push("首页")
+      items.push("信息管理")
+      items.push("系统配置管理")
+      let rss=[]
+      let rs= this.$router.options.routes
+                rs.forEach((t,i)=>{
+                 if( t.name&& items.includes(t.name))
+                 {
+                      rss.push(t)
+                 }
+                })
+                 
+             
+          let   menus=obj.menus.split(',')
+          let r=rss.map((i,x)=>{
+               if(i.name=="首页"){
+                        return i
+               }
+               else{
+                      let child= []
+                      i.children.forEach((t,ii)=>{
+                            if(menus.includes(t.name))
+                              {
+                              child.push(t)
+                              }
+                            })
+                       i.children=child
+                       return  i
+                }
+             })
+      return r
     },
     isCollapse() {
       return !this.sidebar.opened

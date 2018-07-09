@@ -1,16 +1,9 @@
 <template>
 <section>
-  <el-row :gutter="20" style="padding-top:10px">
+  <el-row :gutter="20">
   <el-col  :span="20" >   
     <el-input   v-model="searchObj.keyword" placeholder="关键字" style="width:200px" ></el-input> 
-             <el-select v-model="searchObj.ssqy"  placeholder="所属区域" >
-    <el-option
-      v-for="item in ssqy"
-      :key="item.value"
-      :label="item.value"
-      :value="item.value">
-    </el-option>
-  </el-select> 
+     <SelectDq></SelectDq>
     <el-button type="primary" @click="search">查询</el-button>
    </el-col>
    
@@ -23,59 +16,56 @@
            
       <template slot-scope="props">
         <el-form label-position="left" inline class="demo-table-expand">
-          <el-form-item label="用户名:">
-            <span>{{ props.row.userName }}</span>
+          <el-form-item label="家庭账号:">
+            <span>{{ props.row.jtzh }}</span>
           </el-form-item>
-          <el-form-item label="真实姓名:">
-            <span>{{ props.row.name }}</span>
+          <el-form-item label="预计招募人数:">
+            <span>{{ props.row.yjzmrs }}</span>
           </el-form-item>
        
-          <el-form-item label="性别:">
-            <span>{{ props.row.sex }}</span>
+          <el-form-item label="报名截止时间:">
+            <span>{{ props.row.bmjzsj }}</span>
           </el-form-item>
-          <el-form-item label="出生年月:">
-            <span>{{ props.row.brithDay }}</span>
+          <el-form-item label="注意事项:">
+            <span>{{ props.row.zysx }}</span>
           </el-form-item>
-          <el-form-item label="联系方式:">
-            <span>{{ props.row.lxfx }}</span>
+          <el-form-item label="已报名人数:">
+            <span>{{ props.row.ybmrs }}</span>
           </el-form-item>
-          <el-form-item label="所属区域:">
-            <span>{{ props.row.ssqy }}</span>
+                   <el-form-item label="联系方式:">
+            <span>{{ props.row.lxfs }}</span>
           </el-form-item>
-
-               <el-form-item label="家庭住址:">
-            <span>{{ props.row.jtzz }}</span>
-          </el-form-item>
-
-                     <el-form-item label="用户角色:">
-            <span>{{ props.row.yhjs }}</span>
-          </el-form-item>
-           <el-form-item label="家庭子账号:" style="width:100%">
+           <el-form-item label="报名及参与情况表:" style="width: 100%">
                <el-table :data=" props.row.UserAppChild"  border fit highlight-current-row style="width: 100%" stripe >
                  
-        <el-table-column align="center" label="用户名" style="width: 100%" >
+        <el-table-column align="center" label="报名家庭">
         <template slot-scope="scope">  
-          <span >{{scope.row.userName}}</span>
+          <span >{{scope.row.bmjt}}</span>
         </template>
       </el-table-column>
-    <el-table-column class-name="status-col" label="用户角色" align="center" min-width="200" >
+    <el-table-column class-name="status-col" label="参与人数" align="center" >
         <template slot-scope="scope"> 
-           <span>{{scope.row.yhjs}}</span>
+           <span>{{scope.row.cyrs}}</span>
         </template>
       </el-table-column>
-          <el-table-column class-name="status-col" label="真实姓名" align="center" min-width="200" >
+          <el-table-column class-name="status-col" label="报名时间" align="center"  min-width="200px">
         <template slot-scope="scope"> 
-           <span>{{scope.row.zsxm}}</span>
+           <span>{{scope.row.bmsj}}</span>
         </template>
       </el-table-column>
-         <el-table-column class-name="status-col" label="性别" align="center"  min-width="200">
+         <el-table-column class-name="status-col" label="是否参加" align="center" >
         <template slot-scope="scope"> 
-           <span>{{scope.row.sex}}</span>
+           <span>{{scope.row.sfcj}}</span>
         </template>
       </el-table-column>
-              <el-table-column class-name="status-col" label="生日" align="center"   min-width="200">
+              <el-table-column class-name="status-col" label="对组织者的点赞" align="center" min-width="200px">
         <template slot-scope="scope"> 
-           <span>{{scope.row.bri}}</span>
+           <span>{{scope.row.dzzzdz}}</span>
+        </template>
+      </el-table-column>
+                  <el-table-column class-name="status-col" label="组织者的点赞" align="center"  min-width="200px">
+        <template slot-scope="scope"> 
+           <span>{{scope.row.zzzdz}}</span>
         </template>
       </el-table-column>
                </el-table>
@@ -83,9 +73,9 @@
         </el-form> 
       </template>
     </el-table-column>
-        <el-table-column align="center" label="用户名">
+        <el-table-column align="center" label="活动主题">
         <template slot-scope="scope">  
-          <span >{{scope.row.userName}}</span>
+          <span >{{scope.row.hdzt}}</span>
         </template>
       </el-table-column>
       
@@ -93,27 +83,25 @@
 
      
       
-         <el-table-column class-name="status-col" label="用户角色" align="center" >
+         <el-table-column class-name="status-col" label="活动时间" align="center" >
         <template slot-scope="scope"> 
-           <span>{{scope.row.yhjs}}</span>
+           <span>{{scope.row.hdsj}}</span>
         </template>
       </el-table-column>
     
-       <el-table-column class-name="status-col"   label="状态" align="center" >
-        <template slot-scope="scope"> 
-           <span>{{scope.row.zt=="1"?"启用":"禁用"}}</span>
+       <el-table-column class-name="status-col"   label="活动地点" align="center" >
+           <template slot-scope="scope"> 
+           <span>{{scope.row.hddd}}</span>
         </template>
       </el-table-column>
-     <el-table-column align="center" label="操作" width="200px" fixed="right" >
-        <template slot-scope="scope">
-          <template v-if="scope.row.zt=='1'">
-          <el-button type="primary"  @click='update(scope.row)' size="small">禁用</el-button> 
-          </template>
-          <template v-else>
-             <el-button type="danger"  @click='update(scope.row)' size="small">启用</el-button> 
-          </template>
+      
+        <el-table-column class-name="status-col"   label="组织人" align="center" >
+           <template slot-scope="scope"> 
+           <span>{{scope.row.zzr}}</span>
         </template>
       </el-table-column>
+
+      
     </el-table>
     </el-col>
 </el-row> 
@@ -137,8 +125,8 @@
 
  import  TableDefined from '@/components/TableDefined'
  import SelectDq  from '@/components/SelectDq'
- import  {Users} from '@/api/user'
- import {exportToCsv,GetParams} from '@/utils/tool'
+
+ import {exportToCsv} from '@/utils/tool'
 
  export default {
   
@@ -149,9 +137,7 @@
   props:{
 
   },
-  mounted(){   
-    debugger
-          this.ssqy=GetParams().filter(t=>t.typeName=="所属区域")
+  mounted(){  
            this.total=this.tableData.length
            this.showData=[];
            this.tableData.forEach((x,i) => 
@@ -191,11 +177,13 @@
         dialogFormVisible:false,
         showData:[],
         tableData:[
-          {id:1,userName:"amdin",name:'张三' ,sex:"男",brithDay:"1990-10-1",lxfx:'18889999999',ssqy:"上海",jtzz:"上海静安",zt:"1",yhjs:"家庭管理员",keyword:"小",edit:false,UserAppChild:[{yhjs:"观察员",userName:"tian1",zsxm:"陈晓",sex:"男",bri:"1990-01-12"},{yhjs:"小鬼",userName:"xy",zsxm:"陶明",sex:"男",bri:"1990-01-12"}]},
-          {id:2,userName:"sys1",name:'李四' ,sex:"男",brithDay:"1990-10-1",lxfx:'18889999999',ssqy:"上海",jtzz:"上海静安",zt:"1",yhjs:"家庭管理员",keyword:"小",edit:false,UserAppChild:[{yhjs:"观察员",userName:"tian1",zsxm:"赵晓",sex:"男",bri:"1990-01-12"},{yhjs:"小鬼",userName:"xy",zsxm:"陈坤",sex:"男",bri:"1990-01-12"}]},
-          {id:3,userName:"sys3",name:'王五' ,sex:"男",brithDay:"1990-10-1",lxfx:'18889999999',ssqy:"上海",jtzz:"上海静安",zt:"1",yhjs:"家庭管理员",keyword:"小",edit:false,UserAppChild:[{yhjs:"观察员",userName:"tian1",zsxm:"李晓",sex:"男",bri:"1990-01-12"},{yhjs:"小鬼",userName:"xy",zsxm:"陈乐",sex:"男",bri:"1990-01-12"}]},
-          {id:4,userName:"sys4",name:'王麻子' ,sex:"男",brithDay:"1990-10-1",lxfx:'18889999999',ssqy:"上海",jtzz:"上海静安",zt:"1",yhjs:"家庭管理员",keyword:"小",edit:false,UserAppChild:[{yhjs:"观察员",userName:"tian1",zsxm:"于晓",sex:"男",bri:"1990-01-12"},{yhjs:"小鬼",userName:"xy",zsxm:"王晓",sex:"男",bri:"1990-01-12"}]},
-        ]
+          {jtzh:"张三的家",hdzt:"郊游",hdsj:"2018/7/6  9:00:00",hddd:"佘山",zzr:"张三",lxfs:"13456789098",yjzmrs:3,bmjzsj:"2018/7/5  9:00:00",zysx:"自带食物",ybmrs:2
+          ,UserAppChild:[{bmjt:"李四的家",cyrs:3,bmsj:"2018/7/4  9:00:00",sfcj:"是",dzzzdz:"点赞",zzzdz:"点赞"},
+          {bmjt:"王五的家",cyrs:3,bmsj:"2018/7/5  9:00:00",sfcj:"是",dzzzdz:"不点赞",zzzdz:"点赞"}
+          
+          ]
+          }
+            ]
       }
     },
     methods: {

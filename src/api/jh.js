@@ -1,16 +1,16 @@
 import request from '@/utils/request'
 
-export function Get( pageSize, pageIndex) {
+export function Get( pageSize, pageIndex,project) {
   return request({
-    url: '/api/Users',
+    url: '/api/PlanLibraries',
     method: 'get',
-    params: { pageSize,pageIndex }
+    params: { pageSize,pageIndex ,project}
   })
 } 
 
 export function  Add(jksetting) {
     return request({
-      url: '/api/Users',
+      url: '/api/PlanLibraries',
       method: 'post',
       data: jksetting
     })
@@ -18,7 +18,7 @@ export function  Add(jksetting) {
 
 export function Update(name,jksetting) {
     return request({
-      url: `/api/Users/${name}`,
+      url: `/api/PlanLibraries/${name}`,
       method: 'PUT',
       data: jksetting
     })
@@ -26,7 +26,7 @@ export function Update(name,jksetting) {
 
   export function Del(name) {
     return request({
-      url: `/api/Users/${name}`,
+      url: `/api/PlanLibraries/${name}`,
       method: 'DELETE'
     })
   }

@@ -59,7 +59,8 @@
      import Breadcrumb from '@/components/Breadcrumb'
 	 import { Sidebar } from './components' 
 	 import Hamburger from '@/components/Hamburger' 
-
+import {Get,Del,Update,Add} from '@/api/cssz'
+import {SetParams,GetYh} from '@/utils/tool'
 	 import sy from '@/assets/404_images/sy.jpg'
 	  export default {
 		data() {
@@ -126,8 +127,17 @@
              },
 			 
 			 mounted() {
-			    //  this.sysUserName=this.name
 
+				 Get(100,1).then(t=>{
+					
+					 SetParams(t.data)
+					 this.sysUserName=GetYh()
+				 }
+
+				 )
+			
+				
+                 
 		}
 	}
 

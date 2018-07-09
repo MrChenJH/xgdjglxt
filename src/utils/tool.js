@@ -111,6 +111,28 @@ catch(err)
 
 }
 
+const gly="gly"
+export function  SetYh(data){
+    localStorage.setItem(gly,data)
+   
+   } 
+   export function  GetYh(){
+    return  localStorage.getItem(gly)
+  } 
+   export function  removeYh(){
+    localStorage.removeItem(gly)
+}
+
+export function  SetYhxx(data){
+    localStorage.setItem(GetYh(),JSON.stringify(data))
+   } 
+   export function  GetYhxx(){
+    return  JSON.parse(localStorage.getItem(GetYh()))
+  } 
+   export function  removeYhxx(){
+    localStorage.removeItem(GetYh())
+   } 
+
 const flowKey="flow"
 export function  SetFlowData(data){
  localStorage.setItem(flowKey,JSON.stringify(data))
@@ -124,6 +146,20 @@ export function  removeFlowData(){
     localStorage.removeItem(flowKey)
 }
 
+
+const st="Params" 
+
+export function  SetParams(data){
+    localStorage.setItem(st,JSON.stringify(data))
+}  
+
+export function  GetParams(){
+    return JSON.parse(localStorage.getItem(st))
+}  
+
+export function  removeParams(){
+    localStorage.removeItem(st)
+}
 
 const schedulerKey="scheduler" 
 

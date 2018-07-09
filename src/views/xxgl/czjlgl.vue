@@ -2,32 +2,7 @@
   <div> 
 
 <el-row :gutter="20">
-  <el-col :span="3" >
-      <el-select v-model="searchObj.bm" placeholder="部门">
-    <el-option
-      v-for="item in czbm"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select>
- 
- 
-  </el-col> 
-   <el-col :span="3" > 
-  <el-input type="text" placeholder="操作人姓名"/>
-  </el-col>
-  <el-col :span="3" > 
-       <el-select v-model="searchObj.lx" placeholder="操作类型">
-    <el-option
-      v-for="item in  czlx"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select>
   
-  </el-col>
   <el-col :span="7" >  
      <el-date-picker
       v-model="dateS"
@@ -44,46 +19,40 @@
     <el-col :span="24" > 
      <el-table :data="showData"  border fit highlight-current-row style="width: 100%" >
 
-    <el-table-column align="center" label="序号" 
-          width="50">
-          <template slot-scope="scope"> 
-            <span>{{scope.row.id}}</span>
-        </template>
-   </el-table-column> 
-        <el-table-column align="center" label="操作类型" width="150">
+ 
+        <el-table-column align="center" label="充值账号" width="150">
          <template slot-scope="scope"> 
          
-         <span >{{scope.row.lx}}</span>
+         <span >{{scope.row.czzh}}</span>
         </template>
       </el-table-column>
       
-      <el-table-column  label="操作名称" align="center" min-width="500px"  >
+      <el-table-column  label="充值金额" align="center"  >
        <template slot-scope="scope"> 
-         <span >{{scope.row.content}}</span>
+         <span >{{scope.row.czje}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column  label="操作人部门" align="center"  min-width="100px" >
+      <el-table-column  label="家庭豆抵扣金额" align="center"  min-width="100px" >
        <template slot-scope="scope"> 
-         <span >{{scope.row.bm}}</span>
+         <span >{{scope.row.jtdtkje}}</span>
         </template>
       </el-table-column>
        
-      <el-table-column  label="操作时间" align="center"  min-width="150px" >
+      <el-table-column  label="充值时间" align="center"  min-width="150px" >
        <template slot-scope="scope"> 
-         <span >{{scope.row.ationTime}}</span>
+         <span >{{scope.row.czsj}}</span>
         </template>
       </el-table-column>
           
    
 
-                 <el-table-column  label="操作人姓名" align="center"  min-width="150px" >
+                 <el-table-column  label="账号到期时间" align="center"  min-width="150px" >
        <template slot-scope="scope"> 
-         <span >{{scope.row.ationtor}}</span>
+         <span >{{scope.row.zhdqsj}}</span>
         </template>
       </el-table-column>
-
-      
+                   
     </el-table>
     </el-col>
 </el-row> 
@@ -237,17 +206,9 @@
         showData:[],
 
         tableData:[
-          {id:1,ationTime:"2018-06-01 16:10",ationtor:'admin' ,bm:"部门1",content:"删除xxxxx",lx:"删除"},
-          {id:2,ationTime:"2018-06-01 16:10",ationtor:'admin' ,bm:"部门1",content:"删除xxxxx",lx:"删除"},
-          {id:3,ationTime:"2018-06-01 16:10",ationtor:'admin' ,bm:"部门1",content:"删除xxxxx",lx:"删除"},
-          {id:4,ationTime:"2018-06-01 16:10",ationtor:'admin' ,bm:"部门1",content:"删除xxxxx",lx:"删除"},
-          {id:5,ationTime:"2018-06-01 16:10",ationtor:'admin' ,bm:"部门1",content:"删除xxxxx",lx:"删除"},
-          {id:6,ationTime:"2018-06-01 16:10",ationtor:'admin' ,bm:"部门1",content:"删除xxxxx",lx:"删除"},
-          {id:7,ationTime:"2018-06-01 16:10",ationtor:'admin' ,bm:"部门1",content:"删除xxxxx",lx:"删除"},
-          {id:8,ationTime:"2018-06-01 16:10",ationtor:'admin' ,bm:"部门1",content:"删除xxxxx",lx:"删除"},
-          {id:9,ationTime:"2018-06-01 16:10",ationtor:'admin' ,bm:"部门1",content:"删除xxxxx",lx:"删除"},
-          {id:10,ationTime:"2018-06-01 16:10",ationtor:'admin' ,bm:"部门1",content:"删除xxxxx",lx:"删除"},
-          {id:11,ationTime:"2018-06-01 16:10",ationtor:'admin' ,bm:"部门1",content:"删除xxxxx",lx:"删除"}
+          {czzh:"张三的家",czje:100,jtdtkje:20,czsj:"2018-07-05 08:00:00",zhdqsj:"2018-09-04 07:59:59"} ,      
+           {czzh:"李四的家",czje:150,jtdtkje:20,czsj:"2018-07-05 08:00:00",zhdqsj:"2018-09-04 07:59:59"}       
+  
           ]
        }
     }

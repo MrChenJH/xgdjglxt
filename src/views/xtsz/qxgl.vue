@@ -3,10 +3,13 @@
  <el-row :gutter="20">
    <el-col :span="1" > <el-button  size="small"  type="primary" @click="dialogFormVisible=true">添加</el-button></el-col>
    <el-col :span="1" style="padding-left: 20px;"><el-button  size="small" @click="removeAll"  type="danger">删除</el-button></el-col>
-
-
 </el-row>
-
+<el-row :gutter="20">
+<el-col :span="5" style="padding-left: 10px;padding-right:0px">  
+   <el-input   v-model="sUserName" placeholder="请输入登录名"></el-input></el-col>
+   <el-col :span="1" ><el-button type="primary" @click="search">查询</el-button></el-col>
+   <el-col :span="2" style="padding-left: 40px;" ><el-button type="primary" @click="exprot"> 导出</el-button></el-col>
+</el-row>
 <el-row  :gutter="20">
     <el-col :span="24" > 
      <el-table :data="showData"  border fit highlight-current-row style="width: 100%" @select="select" @select-all="select">
@@ -16,74 +19,66 @@
             
          </el-table-column> 
 
-    <el-table-column align="center" label="序号"  width="50" fixed="left">
+    <el-table-column align="center" label="序号"  width="50">
           <template slot-scope="scope"> 
             <span>{{scope.row.id}}</span>
         </template>
    </el-table-column> 
-        <el-table-column align="center" label="角色名" width="180">
+        <el-table-column align="center" label="姓名" width="80">
         <template slot-scope="scope"> 
-            <template v-if="scope.row.edit">
-                     <el-input
-              type="text"
-           
-              placeholder="角色名"
-              v-model="scope.row.jsm">
-            </el-input>
-           
-          </template> 
-        <span v-else>{{scope.row.jsm}}</span>
+            <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-       
-             <el-table-column min-width="400px"  label="角色分类" align="center" >
+      
+      <el-table-column min-width="100px"  label="登录名" align="center" >
        <template slot-scope="scope"> 
            <template v-if="scope.row.edit">
-               <el-input
-              type="text"
-           
-              placeholder="角色分类"
-              v-model="scope.row.jsfl">
-            </el-input>
-        
+            <el-input v-model="scope.row.userName" placeholder="请输入内容"></el-input>
           </template> 
-         <span v-else>{{scope.row.jsfl}}</span>
+         <span v-else>{{scope.row.userName}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column min-width="400px"  label="角色描述" align="center" >
-            <template slot-scope="scope"> 
-       <template v-if="scope.row.edit">
-            <el-input v-model="scope.row.jsms" placeholder="角色权限"></el-input>
-          </template> 
-        <span v-else>{{scope.row.jsms}}</span>
-         </template>
-      </el-table-column>
-
-      <el-table-column min-width="100px"  label="角色权限" align="center" >
+      <el-table-column min-width="100px"  label="密码" align="center" >
        <template slot-scope="scope"> 
            <template v-if="scope.row.edit">
-            <el-input v-model="scope.row.jsqx" placeholder="角色权限"></el-input>
+            <el-input v-model="scope.row.pwd" placeholder="请输入密码"></el-input>
           </template> 
-        <span v-else>{{scope.row.jsqx}}</span>
+        <span v-else>{{scope.row.pwd}}</span>
         </template>
       </el-table-column>
-   <el-table-column min-width="100px"  label="角色状态" align="center" fixed="right">
-       <template slot-scope="scope"> 
-           <span>{{scope.row.zt=="1"?"启用":"禁用"}}</span>
+
+      <el-table-column min-width="200px" label="权限菜单" align="center">
+        <template slot-scope="scope"> 
+         <template v-if="scope.row.edit">
+           <Select v-model="scope.row.officeName" filterable   multiple :transfer='true' >
+              <Option v-for="item in cs2" :value="item.name" :key="item.name">{{ item.name }}</Option>
+            </Select>
+        </template>
+          <span  v-else>{{scope.row.officeName.join(',')}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="250px" fixed="right">
+
+      <el-table-column width="120px" label="创建人" align="center" >
+        <template slot-scope="scope">
+             <span>{{scope.row.creatorName}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column class-name="status-col" width="190"  label="创建时间" align="center" >
+        <template slot-scope="scope"> 
+           <span>{{scope.row.creatorTime}}</span>
+        </template>
+      </el-table-column>
+
+
+     <el-table-column align="center" label="操作" width="200px">
         <template slot-scope="scope">
           <template v-if="scope.row.edit">
           <el-button  type="success" @click="update(scope.row)"          size="small" >保存</el-button>
           <el-button  type="warning" @click="cancelEdit(scope.row)"      size="small">取消</el-button>
           </template>
           <template v-else>
-             <template v-if="scope.row.zt=='0'">
-                <el-button type="primary" @click='update(scope.row)' size="small">启用</el-button> 
-            </template>
-              <el-button type="primary" @click='update(scope.row)' size="small" v-else>禁用</el-button>
           <el-button type="primary" @click='scope.row.edit=!scope.row.edit' size="small">编辑</el-button> 
           <el-button type="danger"  @click='remove(scope.row)' size="small">删除</el-button> 
           </template>
@@ -98,7 +93,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currentPage"
-      :page-sizes="[5,10, 20, 30, 40]"
+     :page-sizes="[10,15, 20, 25, 30]"
       :page-size="pageSize1"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total">
@@ -111,7 +106,8 @@
   <el-dialog
       width="30%"
       title="提示"
-      :visible.sync="innerVisible1" > 
+      :visible.sync="innerVisible1"
+      > 
          <el-row> 
            <el-col :span="24" style="color: red;padding-right: 5px;">
             {{alertcontent}}
@@ -132,35 +128,47 @@
            </el-col>
            </el-row> 
     </el-dialog>
+    <el-form :model="obj" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+ 
   <el-row> 
-    <el-col :span="3" :offset="1" style="text-align: right;    padding-right: 7px;"><span class="textSpan" > 角色名:</span></el-col> 
-    <el-col :span="8">
-
-    <el-input  v-model="saveObj.jsm"/>
-           
-      </el-col> 
-    <el-col :span="3"  style="text-align: right;    padding-right: 5px;"><span class="textSpan"> 角色分类:</span></el-col> 
-    <el-col :span="8"><el-input  v-model="saveObj.jsfl"/></el-col>
+     <el-col :span="11" >
+        <el-form-item label="姓名:" prop="name">
+           <el-input type="text" v-model="obj.name"/>
+        </el-form-item>
+     </el-col>
+    
+       <el-col :span="11" >
+        <el-form-item label="登录名:" prop="userName">
+               <el-input  v-model="obj.userName"/>
+        </el-form-item>
+     </el-col>
+    
   </el-row> 
   <el-row > 
-   <el-col :span="3" :offset="1"   style="text-align: right;    padding-right: 5px;"><span     class="textSpan">项目描述:</span></el-col> 
-   <el-col :span="19">   <el-input  v-model="saveObj.jsms"  type="textarea"  :rows="4"/></el-col> 
 
- </el-row>
-   <el-row > 
-   <el-col :span="3" :offset="1"   style="text-align: right;    padding-right: 5px;"><span     class="textSpan">角色权限:</span></el-col> 
-   <el-col :span="8">   <el-input  type="text" v-model="saveObj.jsqx"/></el-col> 
-     <el-col :span="3"  style="text-align: right;    padding-right: 5px;"><span class="textSpan"> 角色状态:</span></el-col> 
-    <el-col :span="8" style="    line-height: 3;">
-
-      <el-radio-group  v-model="saveObj.zt" >
-     <el-radio  label="0">禁用</el-radio>
-     <el-radio label="1">启用</el-radio>
-    </el-radio-group>
-      </el-col>
-  </el-row>
- 
-
+      <el-col :span="11" >
+        <el-form-item label="密码:" prop="password">
+           <el-input  type="password" v-model="obj.password"/>
+        </el-form-item>
+     </el-col>
+    
+       <el-col :span="11" >
+        <el-form-item label="确认密码:" prop="repassword">
+           <el-input type="password"  v-model="obj.repassword"/>
+        </el-form-item>
+     </el-col>
+   </el-row>
+<el-row :gutter="5">  
+     <el-col :span="22" >
+        <el-form-item label="负责处室:" prop="officeName">
+          <el-checkbox-group  v-model="obj.officeName">
+            <el-checkbox v-for="city in  cs2" :label="city.name" :key="city.name">{{city.name}}</el-checkbox>
+           </el-checkbox-group>
+         </el-form-item>
+     </el-col>
+     </el-row >  
+    </el-form>
+  
   <div slot="footer" class="dialog-footer">
     <el-button @click="dialogFormVisible = false">取 消</el-button>
     <el-button type="primary" @click="Save">确 定</el-button>
@@ -173,159 +181,17 @@
 <script>
 
  import  TableDefined from '@/components/TableDefined'
- import  {office,addRole,RoleS}  from '@/api/role'
+
  import  {Users} from '@/api/user'
  import {exportToCsv} from '@/utils/tool'
 
  export default {
-  
-    components: {
-    TableDefined
-  },
-  props:{
-
-  },
-  mounted(){  
- 
-      this.restaurants = this.loadAll();
-   
-           this.total=this.tableData.length
-           this.showData=[];
-           this.tableData.forEach((x,i) => 
-           {     
-             console.log(x)
-             console.log(i)
-             if(i>=((this.currentPage-1)*this.pageSize1)&&i<(this.currentPage*this.pageSize1))
-                {
-                                this.showData.push(x); 
-                }
-           });
-
-           console.log(this.showData)
-     },
-    data() {
-      return {
-         restaurants: [],
-        state4: '',
-        timeout:  null,
-        innerVisible1:false,
-        alertcontent:'',
-        sUserName:'',
-        total:400,
-        pageSize1:5,
-        selectRows:[],
-      
-        ssqy:[
-           {name:"上海"},
-           {name:"北京"},
-           {name:"重庆"},
-           {name:"武汉"},
-           {name:"无锡"}
-    
-         ],
-        listLoading: true,
-        innerVisible:false,
-         xmlx:[
-            {name:"系统预设项目"},
-            {name:"自定义项目"},
-            {name:"活动项目"}
-        ],
-        searchObj:{
-           keyword:'',
-           date:[],
-           ssqy:''
-         },
-         saveObj:{
-           jsm:"",
-           jsfl:"",
-           jsms:0,
-           jsqx:0
-         },
-        currentPage: 1,
-        dialogFormVisible:false,
-        showData:[],
-        tableData:[
-           {id:1,jsm:"角色1",jsfl:'普通角色' ,jsms:"XXXXXXXXXXXX",jsqx:"菜单1,菜单2",zt:"0",edit:false},
-          {id:2,jsm:"角色2",jsfl:'普通角色'  ,jsms:"XXXXXXXXXXXX",jsqx:"菜单1,菜单2",zt:"0",edit:false},
-          {id:3,jsm:"角色3",jsfl:'普通角色'  ,jsms:"XXXXXXXXXXXX",jsqx:"菜单1,菜单2",zt:"0",edit:false},
-          {id:4,jsm:"角色4",jsfl:'普通角色'  ,jsms:"XXXXXXXXXXXX",jsqx:"菜单1,菜单2",zt:"0",edit:false},
-          {id:5,jsm:"角色5",jsfl:'普通角色'  ,jsms:"XXXXXXXXXXXX",jsqx:"菜单1,菜单2",zt:"0",edit:false},
-          {id:6,jsm:"角色6",jsfl:'普通角色' ,jsms:"XXXXXXXXXXXX",jsqx:"菜单1,菜单2",zt:"0",edit:false},
-          {id:7,jsm:"角色7",jsfl:'普通角色'  ,jsms:"XXXXXXXXXXXX",jsqx:"菜单1,菜单2",zt:"0",edit:false},
-          {id:8,jsm:"角色8",jsfl:'普通角色'  ,jsms:"XXXXXXXXXXXX",jsqx:"菜单1,菜单2",zt:"0",edit:false},
-          {id:9,jsm:"角色9",jsfl:'普通角色'  ,jsms:"XXXXXXXXXXXX",jsqx:"菜单1,菜单2",zt:"0",edit:false},
-          {id:10,jsm:"角色10",jsfl:'普通角色'  ,jsms:"XXXXXXXXXXXX",jsqx:"菜单1,菜单2",zt:"0",edit:false},
-          {id:11,jsm:"角色11",jsfl:'普通角色' ,jsms:"XXXXXXXXXXXX",jsqx:"菜单1,菜单2",zt:"0",edit:false},
-          {id:12,jsm:"角色12",jsfl:'普通角色'  ,jsms:"XXXXXXXXXXXX",jsqx:"菜单1,菜单2",zt:"0",edit:false},
-          {id:13,jsm:"角色13",jsfl:'普通角色'  ,jsms:"XXXXXXXXXXXX",jsqx:"菜单1,菜单2",zt:"0",edit:false},
-          {id:14,jsm:"角色14",jsfl:'普通角色'  ,jsms:"XXXXXXXXXXXX",jsqx:"菜单1,菜单2",zt:"0",edit:false},
-          {id:15,jsm:"角色15",jsfl:'普通角色'  ,jsms:"XXXXXXXXXXXX",jsqx:"菜单1,菜单2",zt:"0",edit:false}
-          ]
-      }
-    } , methods: {
-       loadAll() {
-        return [
-          { "value": "用户1" },
-          { "value": "admin" },
-          { "value": "sys" },
-          { "value": "sys1" },
-          { "value": "sys2" },
-          { "value": "sys3" },
-          { "value": "sys4" },
-          { "value": "sys5" },
-          { "value": "sys6" },
-          { "value": "sys7" },
-          { "value": "sys8" },
-          { "value": "sys9" },
-          { "value": "sys10" }
-         ];
+    methods: {
+      exprot(){ 
+        let data=this.tableData;
+        data.unshift( {id:"序号",name:"姓名",userName:'登录名' ,pwd:"密码",officeName:"归口办公室",creatorName:'创建人',creatorTime:"创建时间",edit:false},);
+        exportToCsv("用户权限.csv",data)
       },
-      querySearchAsync(queryString, cb) {
-        var restaurants = this.restaurants;
-        var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
-
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => {
-          cb(results);
-        }, 3000 * Math.random());
-      },
-      createStateFilter(queryString) {
-        return (state) => {
-          return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
-      handleSelect(item) {
-        console.log(item);
-      },
-      update(row){
-        debugger
-        let content="",v=""
-        if(row.zt=="1"){
-           content="此操作将禁用(角色"+row.jsm+"), 是否继续"
-           v="0"
-        }else{
-            content="此操作将启用(角色"+row.jsm+"), 是否继续"
-            v="1"
-        }
-        this.$confirm(content, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          row.zt=v
-          this.search()
-          this.$message({
-            type: 'success',
-            message: '成功!'
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });          
-        });
-      },
-  
       search(){
          let data= this.tableData.filter(r=>r.userName.includes(this.sUserName))
          this.showData=[];
@@ -405,13 +271,60 @@
 
       },
       update(row){
-             row.edit = false
+
+        
+            
+         
+            if( !this.innerVisible1)
+            {
+           this.dialogFormVisible=false;
+           row.edit = false
+           }
       },
 
-     Save(){   
-       
-       this.search();
-       this.dialogFormVisible=false; 
+     Save(){  
+
+         this.$refs["ruleForm"].validate((valid) => {
+          if (valid) { 
+             if(this.obj.password!=this.obj.repassword&&!this.innerVisible){
+                this.alertcontent="密码和确认密码不一致"; 
+                this.innerVisible=true
+            }
+              
+            if(!this.innerVisible){
+         
+         
+             let id= this.tableData.length+1; 
+             this.tableData.unshift({id,name:this.obj.name,userName:this.obj.userName,officeName:this.obj.officeName,pwd:this.obj.password,creatorName:"admin",creatorTime: new Date().format("yyyy-MM-dd hh:mm:ss"),edit:false})
+            
+            
+           
+                  this.$refs["ruleForm"].resetFields();
+              this.$message({
+                 message: '保存成功',
+                 type: 'success'
+               })
+                 this.search()
+            this.dialogFormVisible=false; 
+            }
+      
+         
+               
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      
+            
+         
+            
+          
+          
+         
+        
+            
+          
       },
       handleSizeChange(val) {  
            this.pageSize1=val;
@@ -420,6 +333,144 @@
       handleCurrentChange(val) {
            this.currentPage=val;
            this.search();
+      }
+    },
+    components: {
+    TableDefined
+  },
+  props:{
+
+  },
+  mounted(){  
+           this.total=this.tableData.length
+           this.showData=[];
+           this.tableData.forEach((x,i) => 
+           {     
+             console.log(x)
+             console.log(i)
+             if(i>=((this.currentPage-1)*this.pageSize1)&&i<(this.currentPage*this.pageSize1))
+                {
+                                this.showData.push(x); 
+                }
+           });
+
+           console.log(this.showData)
+     },
+    data() {
+      return {
+
+        innerVisible1:false,
+        alertcontent:'',
+        sUserName:'',
+        total:400,
+        pageSize1:10,
+        selectRows:[],
+        cs:{
+          bgs:false,
+          rsjy:false,
+          tzggyfgc:false,
+          fzyjc:false,
+          fzjhc:false,
+          tjcwc:false,
+          yfjdjsyglc:false,
+          gjhzc:false,
+          kpgzc:false,
+          jcyjc:false,
+          gxjscyc:false,
+          swyyc:false,
+          shfzc:false,
+          cxfwc:false
+        },
+        cs1:{
+          bgs:"办公室",
+          rsjy:"人事教育处",
+          tzggyfgc:"体制改革与法规处",
+          fzyjc:"发展研究处",
+          fzjhc:"发展计划处",
+          tjcwc:"条件财务处",
+          yfjdjsyglc:"研发基地建设与管理处",
+          gjhzc:"国际合作处",
+          kpgzc:"科普工作处",
+          jcyjc:"基础研究处",
+          gxjscyc:"高新技术产业化处",
+          swyyc:"生物医药处",
+          shfzc:"社会发展处",
+          cxfwc:"创新服务处"
+        },ccc:["办公室","人事教育处"],
+        cs2:[
+           {name:"权限管理"},
+           {name:"接口设置"},
+           {name:"参数设置"},
+           {name:"登录日志"},
+           {name:"操作日志"},
+           {name:"用户管理"},
+           {name:"计划管理"},
+           {name:"结算单管理"},
+           {name:"积分管理"}
+         ],
+        listLoading: true,
+        innerVisible:false,
+        obj:{
+           name:'',
+           userName:'',
+           password:'',
+           repassword:'',
+           officeName:[]
+          },
+            rules: {
+          name: [
+            { required: true, message: '请输入姓名', trigger: 'blur' }
+          
+          ],
+          userName: [
+            { required: true, message: '请输入登录名', trigger: 'blur' }
+          ],
+          password: [
+           { required: true, message: '请输入密码', trigger: 'blur' }
+          ],
+          repassword: [
+          { required: true, message: '请输入确认密码', trigger: 'blur' }
+          ],
+          officeName: [
+            { type: 'array', required: true, message: '请至少选择一个负责处室', trigger: 'change' }
+          ]
+         
+        },
+        currentPage: 1,
+        dialogFormVisible:false,
+        showData:[],
+        tableData:[
+          {id:1,name:"name1",userName:'Admin' ,pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:2,name:"name2",userName:'Admin1',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:3,name:"name3",userName:'Admin2',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:4,name:"name4",userName:'Admin3',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:5,name:"name1",userName:'Admin' ,pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:6,name:"name2",userName:'Admin1',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:7,name:"name3",userName:'Admin2',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:8,name:"name4",userName:'Admin3',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:9,name:"name1",userName:'Admin' ,pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:10,name:"name2",userName:'Admin1',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:11,name:"name3",userName:'Admin2',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:12,name:"name4",userName:'Admin3',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:13,name:"name1",userName:'Admin' ,pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:14,name:"name2",userName:'Admin1',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:15,name:"name3",userName:'Admin2',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:16,name:"name4",userName:'Admin3',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:17,name:"name1",userName:'Admin' ,pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:18,name:"name2",userName:'Admin1',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:19,name:"name3",userName:'Admin2',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:20,name:"name4",userName:'Admin3',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+        
+          {id:21,name:"name1",userName:'Admin' ,pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:22,name:"name2",userName:'Admin1',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:23,name:"name3",userName:'Admin2',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:24,name:"name4",userName:'Admin3',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+        
+          {id:25,name:"name1",userName:'Admin' ,pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:26,name:"name2",userName:'Admin1',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:27,name:"name3",userName:'Admin2',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          {id:28,name:"name4",userName:'Admin3',pwd:"123456",officeName:['权限管理'],creatorName:'Admin',creatorTime:'2018-03-01 19:11:10',edit:false},
+          ]
       }
     }
   }
@@ -460,7 +511,6 @@ width: 60px;
 
 }
 
-
 th.is-leaf {
   
     background: inherit;
@@ -469,6 +519,14 @@ th.is-leaf {
     border-width: 0px;
     border-style: solid;
     border-color: rgba(223, 223, 223, 1);
+}
+
+.el-checkbox-group label{
+    width: 170px
+  }
+.el-checkbox+.el-checkbox {
+    margin-left: 0px; 
+    width: 170px
 }
 </style>
 

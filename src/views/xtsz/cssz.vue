@@ -1,80 +1,46 @@
 <template>
   <div> 
  <el-row :gutter="20">
-   <el-col :span="5" > 
-     <el-button  size="small"  type="primary" @click="dialogFormVisible=true">添加</el-button>
-     <el-button  size="small" @click="removeAll"  type="danger">删除</el-button>
-   </el-col>
-
-
-
+   <el-col :span="1" > <el-button  size="small"  type="primary" @click="dialogFormVisible=true">添加</el-button></el-col>
+   <el-col :span="1" style="padding-left: 20px;"><el-button  size="small" @click="removeAll"  type="danger">删除</el-button></el-col>
 </el-row>
-<el-row :gutter="20">
-  <el-col :span="4" >   
- 
-    <el-input v-model="searchObj.keyword" placeholder="项目描述"></el-input>
-  
-   </el-col>
 
-   <el-col :span="1" >
-     <el-button type="primary" @click="search">查询</el-button>
-     </el-col>
-  
-
-</el-row>
 <el-row  :gutter="20">
     <el-col :span="24" > 
      <el-table :data="showData"  border fit highlight-current-row style="width: 100%" @select="select" @select-all="select">
          <el-table-column align="center"
              type="selection"
              width="55">
-            
-         </el-table-column> 
+       </el-table-column> 
 
-  
+        <el-table-column align="center" label="参数类型" width="180">
+        <template slot-scope="scope"> 
+            <template v-if="scope.row.edit">
+                   <el-select v-model="scope.row.typeName" placeholder="请选择参数类型">
+    <el-option
+      v-for="item in cslx"
+      :key="item.name"
+      :label="item.name"
+      :value="item.name">
+    </el-option>
+  </el-select>
+          
+           </template> 
+        <span v-else>{{scope.row.typeName}}</span>
+        </template>
+      </el-table-column>
       
-      
-      <el-table-column min-width="400px"  label="项目描述" align="center" >
+      <el-table-column min-width="400px"  label="参数值" align="center" >
        <template slot-scope="scope"> 
            <template v-if="scope.row.edit">
-               <el-input
-              type="textarea"
-              :autosize="{ minRows: 2, maxRows: 4}"
-              placeholder="描述"
-              v-model="scope.row.describe">
-            </el-input>
+                <el-input type="text" v-model="scope.row.value"/>
         
           </template> 
-         <span v-else>{{scope.row.describe}}</span>
+         <span v-else>{{scope.row.value}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column min-width="100px"  label="推荐豆值" align="center" >
-       <template slot-scope="scope"> 
-           <template v-if="scope.row.edit">
-            <el-input v-model="scope.row.gsScore" placeholder="推荐豆值"></el-input>
-          </template> 
-        <span v-else>{{scope.row.gsScore}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column min-width="100px" label="标签" align="center">
-        <template slot-scope="scope"> 
-         <template v-if="scope.row.edit">
-
-             <el-select v-model="scope.row.tags"  placeholder="所属区域" >
-    <el-option
-      v-for="item in tags"
-      :key="item.value"
-      :label="item.value"
-      :value="item.value">
-    </el-option>
-  </el-select> 
-           
-        </template>
-          <span  v-else>{{scope.row.tags}}</span>
-        </template>
-      </el-table-column>
+     
 
       
 
@@ -119,7 +85,7 @@
            </el-col>
            </el-row> 
     </el-dialog>
-<el-dialog title="计划管理" :visible.sync="dialogFormVisible" >
+<el-dialog title="参数设置" :visible.sync="dialogFormVisible" >
      
      <el-dialog
       width="30%"
@@ -133,32 +99,27 @@
            </el-col>
            </el-row> 
     </el-dialog>
-  <el-row> 
- 
-    <el-col :span="3" :offset="1"  style="text-align: right;    padding-right: 5px;"><span class="textSpan"> 推荐豆值:</span></el-col> 
-    <el-col :span="19"><el-input  v-model="saveObj.gsScore"/></el-col>
-  </el-row> 
-  <el-row > 
-   <el-col :span="3" :offset="1"   style="text-align: right;    padding-right: 5px;"><span     class="textSpan">项目描述:</span></el-col> 
-   <el-col :span="19">   <el-input  v-model="saveObj.describe"  type="textarea"  :rows="4"/></el-col> 
 
- </el-row>
-   <el-row > 
-   <el-col :span="3" :offset="1"   style="text-align: right;    padding-right: 5px;"><span     class="textSpan">标签:</span></el-col> 
-   <el-col :span="19">   
  
-                <el-select v-model="saveObj.tags"  placeholder="所属区域" >
+   <el-row > 
+   <el-col :span="3" :offset="1"   style="text-align: right;    padding-right: 5px;"><span     class="textSpan">参数类型:</span></el-col> 
+   <el-col :span="20">   
+
+     <el-select v-model="saveObj.TypeName" placeholder="请选择参数类型">
     <el-option
-      v-for="item in tags"
-      :key="item.value"
-      :label="item.value"
-      :value="item.value">
+      v-for="item in cslx"
+      :key="item.name"
+      :label="item.name"
+      :value="item.name">
     </el-option>
-  </el-select> 
+  </el-select>
      </el-col> 
   </el-row>
  
-
+ <el-row > 
+   <el-col :span="3" :offset="1"   style="text-align: right;    padding-right: 5px;"><span     class="textSpan">参数值:</span></el-col> 
+   <el-col :span="20">   <el-input  type="text" v-model="saveObj.Value"/></el-col> 
+  </el-row>
   <div slot="footer" class="dialog-footer">
     <el-button @click="dialogFormVisible = false">取 消</el-button>
     <el-button type="primary" @click="Save">确 定</el-button>
@@ -171,9 +132,9 @@
 <script>
 
  import  TableDefined from '@/components/TableDefined'
-
-import {Get,Del,Update,Add} from '@/api/jh'
- import {exportToCsv,GetParams} from '@/utils/tool'
+import {Get,Del,Update,Add} from '@/api/cssz'
+ import  {Users} from '@/api/user'
+ import {exportToCsv} from '@/utils/tool'
 
  export default {
   
@@ -184,19 +145,16 @@ import {Get,Del,Update,Add} from '@/api/jh'
 
   },
   mounted(){  
- 
-    
-          this.tags=GetParams().filter(t=>t.typeName=="标签")
-             Get(5,1).then(t=>{
-               this.total=t.total
-               this.showData= t.data
-             })
-          
-          
+       Get(5,1).then(r=>{
+            debugger;
+            console.log(r)
+            this.total=r.total
+            this.showData=r.data
+        })
      },
     data() {
       return {
-         restaurants: [],
+        restaurants: [],
         state4: '',
         timeout:  null,
         innerVisible1:false,
@@ -205,36 +163,56 @@ import {Get,Del,Update,Add} from '@/api/jh'
         total:400,
         pageSize1:5,
         selectRows:[],
+      
+        cslx:[
+           {name:"标签"},
+           {name:"所属区域"}
+         ],
         listLoading: true,
         innerVisible:false,
+     
         searchObj:{
-           keyword:''
+           keyword:'',
+           date:[],
+           ssqy:''
          },
          saveObj:{
-           describe:"",
-           tags:"",
-           gsScore:"0",
-           projectId:0
-      
-         },
+           TypeName:"",
+           Value:""
+          },
         currentPage: 1,
         dialogFormVisible:false,
         showData:[],
-        tags:[]
-       
+        tableData:[
+         
+          ]
       }
-    } , methods: {
-     
-   
-   
-      search(){ 
+    },
+  methods:{
+      querySearchAsync(queryString, cb) {
+        var restaurants = this.restaurants;
+        var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
 
-          Get(this.pageSize1,this.currentPage,this.searchObj.keyword).then(t=>{
-                this.showData=t.data
-                 this.total=t.total
-             })
-
-       
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          cb(results);
+        }, 3000 * Math.random());
+      },
+      createStateFilter(queryString) {
+        return (state) => {
+          return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      handleSelect(item) {
+        console.log(item);
+      },
+      search(){
+        Get(this.pageSize1,this.currentPage).then(r=>{
+            debugger;
+            console.log(r)
+            this.total=r.total
+            this.showData=r.data
+        })
       },
       select(r,i){
         this.selectRows=[]
@@ -253,17 +231,21 @@ import {Get,Del,Update,Add} from '@/api/jh'
           type: 'warning'
         }).then(() => {
           this.selectRows.forEach((item,i)=>{
-             Del(item.projectId).then(t=>{
-                 this.search()
+              Del(item.id).then(t=>{
+
+           this.search()
+           this.$message({
+           message: '删除成功',
+           type: 'success'
+          })
+        })
+        })
+      
+        this.search()
               this.$message({
            message: '删除成功',
            type: 'success'
           })
-
-             })
-        })
-      
-       
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -281,18 +263,20 @@ import {Get,Del,Update,Add} from '@/api/jh'
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-            
+       debugger
+       console.log(row.name)
+        Del(row.id).then(t=>{
 
-             Del(row.projectId).then(t=>{
-                 this.search()
-              this.$message({
+           this.search()
+           this.$message({
            message: '删除成功',
            type: 'success'
           })
-
-             })
-      
-        }).catch(() => {
+        })
+     
+        }).catch((err) => { 
+          debugger
+          console.log(err)
           this.$message({
             type: 'info',
             message: '已取消删除'
@@ -306,19 +290,21 @@ import {Get,Del,Update,Add} from '@/api/jh'
       this.search()
 
       },
-      update(row){
-         Update(row.projectId,row).then(t=>{
-           this.edit=false
+      update(row){ 
+         Update(row.typeName,row.value,row).then(t=>{
+
+           row.edit = false
          })
+      
+            
       },
 
      Save(){   
-       
        Add(this.saveObj).then(t=>{
-      this.dialogFormVisible=false
-      this.search()
+         this.search();
+       this.dialogFormVisible=false; 
        })
- 
+  
       },
       handleSizeChange(val) {  
            this.pageSize1=val;
@@ -328,8 +314,9 @@ import {Get,Del,Update,Add} from '@/api/jh'
            this.currentPage=val;
            this.search();
       }
+      }
     }
-  }
+  
 </script>
 <style>
  .el-row {
